@@ -1,0 +1,60 @@
+<head>
+  <link
+    rel="stylesheet"
+    href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+  />
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fa{
+      font-size: 50px;
+    }
+    .fa-star-o:before {
+      content: "\f006";
+      color: #5f6368;
+    }
+
+    .fa-star:before {
+      content: "\f005";
+      color: #d56e0c;
+    }
+    .display-star {
+      display: flex;
+      align-items: "center";
+    }
+  </style>
+</head>
+<body>
+  <div id="star"></div>
+  <div id="display-star"></div>
+
+  <script src="script.js"></script>
+  <script>
+    function Star(id, value, callback) {
+      const element = document.querySelector(id)
+      const fragment = new DocumentFragment();
+
+      for(let i=0; i<value;i++) {
+        const iElement = document.createElement('i')
+        iElement.classList.add('fa')
+        iElement.classList.add('fa-star-o')
+        fragment.appendChild(iElement)
+      }
+      element.appendChild(fragment)
+      element.addEventListener('mouseover', onMouseOver)
+      element.addEventListener('click', onClick)
+      element.addEventListener('mouseleave', onMouseLeave)
+
+      function onMouseOver(e) {
+        console.log(e);
+      }
+    }
+    function getStar(value) {
+      document.getElementById("display-star").innerHTML = value;
+    }
+    new Star("#star", 5, getStar);
+  </script>
+</body>
