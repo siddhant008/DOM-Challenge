@@ -1,0 +1,80 @@
+<body>
+  <style>
+    .box {
+      height: 60px;
+      width: 60px;
+      border: 2px solid grey;
+    }
+    .flex {
+      /* flex: auto; */
+      display: flex;
+      /*margin: auto;*/
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <div id="grid"></div>
+
+  <script src="script.js"></script>
+  <script>
+    function PixelArt(el, rows, cols) {
+      // write logic to create pixel art grid.
+      const element = document.querySelector(el);
+      const fragment = new DocumentFragment();
+      for (let i = 0; i < rows; i++) {
+        const flexDiv = document.createElement("div");
+        flexDiv.classList.add("flex");
+        for (let j = 0; j < cols; j++) {
+          const div = document.createElement("div");
+          div.classList.add("box");
+          div.dataset.rValue = i;
+          div.dataset.cValue = j;
+          flexDiv.appendChild(div);
+        }
+        fragment.appendChild(flexDiv);
+      }
+      // color palette row
+      const flexColorDiv = document.createElement("div");
+      flexColorDiv.classList.add("flex");
+      const colors = [
+        "red",
+        "yellow",
+        "green",
+        "blue",
+        "turquoise",
+        "orange",
+        "purple",
+        "cyan",
+        "skyblue",
+        "brown",
+      ];
+      let currentColor = colors[0];
+      for (let j = 0; j < cols; j++) {
+        const div = document.createElement("div");
+        div.classList.add("box");
+        div.style.backgroundColor = colors[j];
+        div.dataset.rValue = rows;
+        div.dataset.cValue = cols;
+        flexColorDiv.appendChild(div);
+      }
+      fragment.appendChild(flexColorDiv);
+      element.appendChild(fragment);
+
+      const fillCell = (e, currentRow, currentCol) => {
+        if (currentRow < rows) {
+          const r = element.children[currentRow];
+          r.children[currentCol].style.backgroundColor = currentColor;
+        } else if (currentCol == cols && currentRow == rows) {
+          currentColor = e.target.style.backgroundColor;
+        }
+      };
+
+      const onMouseClick = (e) => {
+        fillCell(e, e.target.dataset.rValue, e.target.dataset.cValue);
+      };
+      element.addEventListener("click", onMouseClick);
+    }
+
+    new PixelArt("#grid", 10, 10);
+  </script>
+</body>
