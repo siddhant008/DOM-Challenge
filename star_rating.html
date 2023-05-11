@@ -8,8 +8,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      height: 100%;
     }
-    .fa{
+    .fa {
       font-size: 50px;
     }
     .fa-star-o:before {
@@ -35,22 +37,42 @@
   <script src="script.js"></script>
   <script>
     function Star(id, value, callback) {
-      const element = document.querySelector(id)
+      const element = document.querySelector(id);
       const fragment = new DocumentFragment();
+      let activeStar = -1
 
-      for(let i=0; i<value;i++) {
-        const iElement = document.createElement('i')
-        iElement.classList.add('fa')
-        iElement.classList.add('fa-star-o')
-        fragment.appendChild(iElement)
+      for (let i = 0; i < value; i++) {
+        const iElement = document.createElement("i");
+        iElement.classList.add("fa");
+        iElement.classList.add("fa-star-o");
+        iElement.dataset.rating = i;
+        fragment.appendChild(iElement);
       }
-      element.appendChild(fragment)
-      element.addEventListener('mouseover', onMouseOver)
-      element.addEventListener('click', onClick)
-      element.addEventListener('mouseleave', onMouseLeave)
+      element.appendChild(fragment);
+      element.addEventListener("mouseover", onMouseOver);
+      element.addEventListener("click", onClick);
+      element.addEventListener("mouseleave", onMouseLeave);
 
+      function fillStar(currentRating) {
+        for (let i = 0; i < value; i++) {
+          if (i <= currentRating) {
+            element.children[i].classList.add("fa-star");
+          } else element.children[i].classList.remove("fa-star");
+        }
+      }
       function onMouseOver(e) {
-        console.log(e);
+        const rating = e.target.dataset.rating;
+        fillStar(rating)
+      }
+      function onClick(e) {
+        activeStar = e.target.dataset.rating;
+        fillStar(activeStar)
+        // document.getElementById("display-star").innerHTML = +activeStar+1;
+        callback(+activeStar+1);
+      }
+
+      function onMouseLeave(e) {
+        fillStar(activeStar)
       }
     }
     function getStar(value) {
