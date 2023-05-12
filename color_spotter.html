@@ -1,0 +1,137 @@
+<body>
+  <style>
+    .score{
+        display: flex;
+        justify-content: center;
+    }
+    .shake {
+      animation: shake 0.8s infinite;
+      transform: translate3d(0, 0, 0);
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translateX(-8px);
+      }
+      20%,
+      40%,
+      60%,
+      80%,
+      100% {
+        transform: translateX(8px);
+      }
+    }
+    .parent-div {
+      border: 2px solid black;
+      width: fit-content;
+      margin: auto;
+    }
+    .box {
+      height: 60px;
+      width: 60px;
+      border: 1px solid white;
+    }
+    .flex {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <div id="score"></div>
+  <div id="game"></div>
+</body>
+<script>
+  const getRandomColors = function () {
+    var ratio = 0.618033988749895;
+
+    var hue = (Math.random() + ratio) % 1;
+    var saturation = Math.round(Math.random() * 100) % 85;
+    var lightness = Math.round(Math.random() * 100) % 85;
+
+    var color =
+      "hsl(" +
+      Math.round(360 * hue) +
+      "," +
+      saturation +
+      "%," +
+      lightness +
+      "%)";
+    var oddColor =
+      "hsl(" +
+      Math.round(360 * hue) +
+      "," +
+      saturation +
+      "%," +
+      (lightness + 5) +
+      "%)";
+
+    return {
+      color,
+      oddColor,
+    };
+  };
+
+  function ChessBoard(el, coreEl, size, score) {
+    // let size = 4;
+    const randomTile = Math.round(Math.random() * size * size);
+    // write logic to create pixel art grid.
+    const element = document.querySelector(el);
+    const scoreElement = document.querySelector(coreEl);
+    scoreElement.classList.add('score')
+    scoreElement.innerHTML = 'YOUR SCORE IS: '+ score;
+    const fragment = new DocumentFragment();
+    const parentDiv = document.createElement("div");
+    parentDiv.classList.add("parent-div");
+    fragment.appendChild(parentDiv);
+
+    const { color, oddColor } = getRandomColors();
+    
+    for (let i = 0; i < size; i++) {
+      const flexDiv = document.createElement("div");
+      flexDiv.classList.add("flex");
+      for (let j = 0; j < size; j++) {
+        const div = document.createElement("div");
+        div.classList.add("box");
+        if (i * size + j == randomTile - 1) div.style.backgroundColor = oddColor;
+        else div.style.backgroundColor = color;
+        div.dataset.rValue = i;
+        div.dataset.cValue = j;
+        const onMouseClick = (e) => {
+          const selectedTileColor = e.target.style.backgroundColor;
+          if (
+            (e.target.nextSibling &&
+              selectedTileColor !==
+                e.target.nextSibling.style.backgroundColor) ||
+            (e.target.previousElementSibling &&
+              selectedTileColor !==
+                e.target.previousElementSibling.style.backgroundColor)
+          ) {
+            // scoreElement.innerHTML = ++score;
+            parentDiv.remove();
+            new ChessBoard("#game", "#score", ++size, ++score);
+            console.log("right");
+          } else {
+            element.classList.add("shake");
+            setTimeout(() => {
+              element.classList.remove("shake");
+            }, 300);
+            console.log("wrong");
+            console.log(randomTile);
+          }
+        };
+        div.addEventListener("click", onMouseClick);
+        flexDiv.appendChild(div);
+      }
+      parentDiv.appendChild(flexDiv);
+    }
+    element.appendChild(fragment);
+  }
+  new ChessBoard("#game", "#score", 4, 0);
+</script>
